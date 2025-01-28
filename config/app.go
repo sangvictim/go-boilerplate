@@ -23,13 +23,13 @@ type BootstrapConfig struct {
 
 func Bootstrap(config *BootstrapConfig) {
 	// setup repository
-	userRepository := repository.NewUserRepository(config.Log)
+	userRepository := repository.NewUserRepository(config.DB, config.Log)
 
 	// setup service
-	userService := service.NewUserService(config.DB, config.Log, config.Validate, userRepository)
+	userService := service.NewUserService(config.DB, config.Log, userRepository)
 
 	// setup controller
-	userController := http.NewUserController(config.Log, userService)
+	userController := http.NewUserController(config.Log, config.Validate, userService)
 	// setup middleware
 
 	routeConfig := route.RouteConfig{
