@@ -26,7 +26,7 @@ func Bootstrap(config *BootstrapConfig) {
 	userRepository := repository.NewUserRepository(config.DB, config.Log)
 
 	// setup service
-	userService := service.NewUserService(config.DB, config.Log, userRepository)
+	userService := service.NewUserService(config.DB, config.Log, config.Config, userRepository)
 
 	// setup controller
 	userController := http.NewUserController(config.Log, config.Validate, userService)

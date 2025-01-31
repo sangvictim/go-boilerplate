@@ -6,15 +6,19 @@ import (
 	"go-api-fiber/internal/model"
 	"go-api-fiber/internal/model/dto"
 	"go-api-fiber/internal/repository"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
 type UserService struct {
 	DB             *gorm.DB
+	Config         *viper.Viper
 	Log            *logrus.Logger
 	UserRepository repository.UserRepositoryInterface
 }
@@ -24,10 +28,11 @@ type UserServiceInterface interface {
 	Login(ctx context.Context, request *model.LoginUserRequest) (*model.LoginUserResponse, error)
 }
 
-func NewUserService(Db *gorm.DB, log *logrus.Logger, userRepository *repository.UserRepository) *UserService {
+func NewUserService(Db *gorm.DB, log *logrus.Logger, config *viper.Viper, userRepository *repository.UserRepository) *UserService {
 	return &UserService{
 		DB:             Db,
 		Log:            log,
+		Config:         config,
 		UserRepository: userRepository,
 	}
 }
@@ -90,7 +95,7 @@ func (c *UserService) Login(ctx context.Context, request *model.LoginUserRequest
 		return nil, fiber.ErrUnauthorized
 	}
 
-	if user.ID == 0 {
+	if user == nil {
 		c.Log.Warnf("Unauthorized : %+v", user)
 		return nil, fiber.ErrUnauthorized
 	}
@@ -100,17 +105,36 @@ func (c *UserService) Login(ctx context.Context, request *model.LoginUserRequest
 		return nil, fiber.ErrUnauthorized
 	}
 
+	timeExp := time.Now().Add(time.Hour * time.Duration(c.Config.GetInt("jwt.exp")))
+	token, err := c.generateJWTToken(*user, timeExp)
+	if err != nil {
+		c.Log.Warnf("Failed to generate access token : %+v", err.Error())
+		return nil, err
+	}
+
 	if err := tx.Commit().Error; err != nil {
 		c.Log.Warnf("Failed commit transaction : %+v", err.Error())
 		return nil, fiber.ErrInternalServerError
 	}
 
-	token := "123456"
-	return dto.LoginUserToReponse(user, token), nil
+	return dto.LoginUserToReponse(user, token, timeExp), nil
 
 }
 
 func hashPassword(password string) string {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	return string(hashedPassword)
+}
+
+func (c *UserService) generateJWTToken(res entity.User, exp time.Time) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"iss": c.Config.GetString("app.name"),
+		"sub": res.ID,
+		"exp": exp.Unix(),
+		"iat": time.Now().Unix(),
+	})
+
+	tokenString, err := token.SignedString([]byte(c.Config.GetString("jwt.secret")))
+
+	return tokenString, err
 }

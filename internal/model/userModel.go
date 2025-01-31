@@ -21,10 +21,10 @@ type LoginUserRequest struct {
 }
 
 type LoginUserResponse struct {
-	Username  string `json:"username"`
-	Name      string `json:"name"`
-	Email     string `json:"email"`
-	Token     string `json:"token"`
-	CreatedAt string `json:"created_at,omitempty"`
-	UpdatedAt string `json:"updated_at,omitempty"`
+	Username    string      `json:"username"`
+	Name        string      `json:"name"`
+	Email       string      `json:"email"`
+	AccessToken DetailToken `json:"access_token"`
+	CreatedAt   string      `json:"created_at,omitempty"`
+	UpdatedAt   string      `json:"updated_at,omitempty"`
 }

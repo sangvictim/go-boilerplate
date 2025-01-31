@@ -16,3 +16,8 @@ type PageMetadata struct {
 	TotalItem int64 `json:"total_item"`
 	TotalPage int64 `json:"total_page"`
 }
+
+type DetailToken struct {
+	Token   string `json:"token"`
+	Expired string `json:"expired"`
+}
