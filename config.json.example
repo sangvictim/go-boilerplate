@@ -11,15 +11,18 @@
   },
   "database": {
     "username": "postgres",
-    "password": "123456",
+    "password": "secret",
     "host": "localhost",
     "port": 5432,
-    "name": "DB_NAME",
+    "name": "database_name",
     "pool": {
       "idle": 10,
       "max": 100,
       "lifetime": 300
     },
     "sslmode": "disable"
+  },
+  "jwt": {
+    "secret": "secret"
   }
 }

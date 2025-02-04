@@ -18,5 +18,6 @@ type PageMetadata struct {
 }
 
 type DetailToken struct {
-	Token string `json:"token"`
+	Token     string `json:"token"`
+	ExpiredAt string `json:"expired_at"`
 }

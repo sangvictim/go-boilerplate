@@ -105,7 +105,8 @@ func (c *UserService) Login(ctx context.Context, request *model.LoginUserRequest
 		return nil, fiber.ErrUnauthorized
 	}
 
-	token, err := c.generateJWTToken(*user)
+	exp := time.Now().Add(time.Hour * 24).Unix()
+	token, err := c.generateJWTToken(*user, exp)
 	if err != nil {
 		c.Log.Warnf("Failed to generate access token : %+v", err.Error())
 		return nil, err
@@ -116,7 +117,7 @@ func (c *UserService) Login(ctx context.Context, request *model.LoginUserRequest
 		return nil, fiber.ErrInternalServerError
 	}
 
-	return dto.LoginUserToReponse(user, token), nil
+	return dto.LoginUserToReponse(user, token, exp), nil
 
 }
 
@@ -125,10 +126,11 @@ func hashPassword(password string) string {
 	return string(hashedPassword)
 }
 
-func (c *UserService) generateJWTToken(res entity.User) (string, error) {
+func (c *UserService) generateJWTToken(res entity.User, exp int64) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user": res.ID,
-		"exp":  time.Now().Add(time.Hour * 24).Unix(),
+		"iss": c.Config.GetString("app.name"),
+		"sub": res.ID,
+		"exp": exp,
 	})
 
 	tokenString, err := token.SignedString([]byte(c.Config.GetString("jwt.secret")))
