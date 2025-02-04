@@ -30,10 +30,12 @@ func Bootstrap(config *BootstrapConfig) {
 
 	// setup controller
 	userController := http.NewUserController(config.Log, config.Validate, userService)
+
 	// setup middleware
 
 	routeConfig := route.RouteConfig{
 		App:            config.App,
+		Viper:          config.Config,
 		UserController: userController,
 	}
 

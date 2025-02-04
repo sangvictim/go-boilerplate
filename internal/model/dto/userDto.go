@@ -16,7 +16,7 @@ func UserToResponse(user *entity.User) *model.UserResponse {
 	}
 }
 
-func LoginUserToReponse(user *entity.User, token string, expired time.Time) *model.LoginUserResponse {
+func LoginUserToReponse(user *entity.User, token string) *model.LoginUserResponse {
 	return &model.LoginUserResponse{
 		Username:  user.Username,
 		Name:      user.Name,
@@ -24,8 +24,7 @@ func LoginUserToReponse(user *entity.User, token string, expired time.Time) *mod
 		CreatedAt: user.CreatedAt.Format(time.RFC3339),
 		UpdatedAt: user.UpdatedAt.Format(time.RFC3339),
 		AccessToken: model.DetailToken{
-			Token:   token,
-			Expired: expired.Format(time.RFC3339),
+			Token: token,
 		},
 	}
 }
