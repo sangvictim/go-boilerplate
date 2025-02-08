@@ -1,4 +1,4 @@
-module go-api-fiber
+module go-boilerplate
 
 go 1.23.3
 

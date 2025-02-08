@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"go-api-fiber/config"
+	"go-boilerplate/config"
 )
 
 // main initializes the application by loading configuration, setting up logging,

@@ -1,8 +1,8 @@
 package dto
 
 import (
-	"go-api-fiber/internal/entity"
-	"go-api-fiber/internal/model"
+	"go-boilerplate/internal/entity"
+	"go-boilerplate/internal/model"
 	"time"
 )
 

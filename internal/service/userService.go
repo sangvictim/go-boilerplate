@@ -2,10 +2,10 @@ package service
 
 import (
 	"context"
-	"go-api-fiber/internal/entity"
-	"go-api-fiber/internal/model"
-	"go-api-fiber/internal/model/dto"
-	"go-api-fiber/internal/repository"
+	"go-boilerplate/internal/entity"
+	"go-boilerplate/internal/model"
+	"go-boilerplate/internal/model/dto"
+	"go-boilerplate/internal/repository"
 	"time"
 
 	"github.com/gofiber/fiber/v2"

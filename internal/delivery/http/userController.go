@@ -1,9 +1,9 @@
 package http
 
 import (
-	"go-api-fiber/internal/delivery/http/exceptions"
-	"go-api-fiber/internal/model"
-	"go-api-fiber/internal/service"
+	"go-boilerplate/internal/delivery/http/exceptions"
+	"go-boilerplate/internal/model"
+	"go-boilerplate/internal/service"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"

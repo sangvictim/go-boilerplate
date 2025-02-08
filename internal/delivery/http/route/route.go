@@ -1,8 +1,8 @@
 package route
 
 import (
-	"go-api-fiber/internal/delivery/http"
-	"go-api-fiber/internal/delivery/http/middleware"
+	"go-boilerplate/internal/delivery/http"
+	"go-boilerplate/internal/delivery/http/middleware"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -53,7 +53,7 @@ func (c *RouteConfig) SetupGuestRoute(route fiber.Router) {
 func (c *RouteConfig) SetupAuthRoute(route fiber.Router) {
 	// route.Use(middleware.JWTProtected(c.App, c.Viper))
 
-	route.Use(middleware.JWTProtected(c.Viper))
+	route.Use(middleware.JWT(c.Viper))
 
 	route.Get("/auth/me", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{"message": "Hello World"})

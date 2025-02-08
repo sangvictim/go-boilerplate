@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"go-api-fiber/internal/entity"
+	"go-boilerplate/internal/entity"
 	"time"
 
 	"github.com/sirupsen/logrus"

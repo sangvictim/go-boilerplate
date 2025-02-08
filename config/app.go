@@ -1,10 +1,10 @@
 package config
 
 import (
-	"go-api-fiber/internal/delivery/http"
-	"go-api-fiber/internal/delivery/http/route"
-	"go-api-fiber/internal/repository"
-	"go-api-fiber/internal/service"
+	"go-boilerplate/internal/delivery/http"
+	"go-boilerplate/internal/delivery/http/route"
+	"go-boilerplate/internal/repository"
+	"go-boilerplate/internal/service"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"

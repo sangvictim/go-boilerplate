@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func JWTProtected(v *viper.Viper) fiber.Handler {
+func JWT(v *viper.Viper) fiber.Handler {
 	return jwtware.New(jwtware.Config{
 		SigningKey:   jwtware.SigningKey{Key: []byte(v.GetString("jwt.secret"))},
 		ContextKey:   "user",

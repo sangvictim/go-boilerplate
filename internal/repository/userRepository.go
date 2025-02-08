@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	"go-api-fiber/internal/entity"
+	"go-boilerplate/internal/entity"
 
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
