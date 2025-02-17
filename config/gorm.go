@@ -34,7 +34,7 @@ func NewDatabase(viper *viper.Viper, log *logrus.Logger) *gorm.DB {
 		}),
 	})
 
-	db.AutoMigrate(&entity.User{})
+	db.AutoMigrate(&entity.User{}, &entity.Avatar{})
 
 	if err != nil {
 		log.Fatalf("failed to connect database: %v", err)

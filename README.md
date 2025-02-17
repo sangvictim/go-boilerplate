@@ -9,6 +9,9 @@ try to implement clean architecture
 5. Gorm
 6. Logrus
 
+### Documentation API
+- [ ] Swagger
+
 ### Autentication
 - [x] JWT Token
 - [x] Middleware

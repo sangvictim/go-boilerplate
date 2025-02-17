@@ -2,7 +2,6 @@ package route
 
 import (
 	"go-boilerplate/internal/delivery/http"
-	"go-boilerplate/internal/delivery/http/middleware"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -14,9 +13,10 @@ import (
 )
 
 type RouteConfig struct {
-	App            *fiber.App
-	Viper          *viper.Viper
-	UserController *http.UserController
+	App               *fiber.App
+	Viper             *viper.Viper
+	UserController    *http.UserController
+	StorageController *http.StorageController
 }
 
 func (c *RouteConfig) Setup() {
@@ -53,9 +53,18 @@ func (c *RouteConfig) SetupGuestRoute(route fiber.Router) {
 func (c *RouteConfig) SetupAuthRoute(route fiber.Router) {
 	// route.Use(middleware.JWTProtected(c.App, c.Viper))
 
-	route.Use(middleware.JWT(c.Viper))
+	// route.Use(middleware.JWT(c.Viper))
 
-	route.Get("/auth/me", func(c *fiber.Ctx) error {
-		return c.JSON(fiber.Map{"message": "Hello World"})
-	})
+	// setup user route
+	userRoute := route.Group("/user")
+	userRoute.Get("/me", c.UserController.Current)
+	userRoute.Patch("/update", c.UserController.Update)
+	userRoute.Post("/change-avatar", c.UserController.ChangeAvatar)
+
+	// setup storage route
+	storageRoute := route.Group("/storage")
+	storageRoute.Post("/upload", c.StorageController.UploadFile)
+	storageRoute.Get("/upload/:file", c.StorageController.GetFile)
+
+	route.Get("/cdn/*/:key", c.StorageController.StreamCdnFromS3)
 }

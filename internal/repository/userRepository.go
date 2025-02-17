@@ -15,9 +15,13 @@ type UserRepository struct {
 
 type UserRepositoryInterface interface {
 	Create(c context.Context, entity *entity.User) error
+	UpdateProfile(c context.Context, entity *entity.User) (*entity.User, error)
+	Show(c context.Context, id string) (*entity.User, error)
 	IsEmail(c context.Context, email string) (bool, error)
 	IsUsername(c context.Context, username string) (bool, error)
 	FindByEmail(c context.Context, email string) (*entity.User, error)
+	ResetPassword(c context.Context, entity *entity.User, password string) (*entity.User, error)
+	UpdateAvatar(c context.Context, entity *entity.Avatar) (*entity.Avatar, error)
 }
 
 func NewUserRepository(db *gorm.DB, log *logrus.Logger) *UserRepository {
@@ -29,6 +33,58 @@ func NewUserRepository(db *gorm.DB, log *logrus.Logger) *UserRepository {
 
 func (r *UserRepository) Create(c context.Context, entity *entity.User) error {
 	return r.Db.WithContext(c).Create(entity).Error
+}
+
+func (r *UserRepository) Show(c context.Context, id string) (*entity.User, error) {
+	user := new(entity.User)
+
+	err := r.Db.WithContext(c).Preload("Avatar").Model(user).Where("id = ?", id).First(user).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (r *UserRepository) UpdateProfile(c context.Context, entity *entity.User) (*entity.User, error) {
+	err := r.Db.WithContext(c).Model(entity).Omit("username").Updates(entity).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return entity, nil
+}
+
+func (r *UserRepository) ResetPassword(c context.Context, entity *entity.User, password string) (*entity.User, error) {
+	err := r.Db.WithContext(c).Model(entity).Update("password", password).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return entity, nil
+}
+
+func (r *UserRepository) UpdateAvatar(c context.Context, entity *entity.Avatar) (*entity.Avatar, error) {
+
+	err := r.Db.WithContext(c).Model(entity).Where("user_id = ?", entity.UserID).First(entity).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			err := r.Db.WithContext(c).Model(entity).Create(entity).Error
+			if err != nil {
+				return nil, err
+			}
+			return entity, nil
+		}
+		return nil, err
+	}
+
+	err = r.Db.WithContext(c).Model(entity).Updates(entity).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return entity, nil
 }
 
 func (r *UserRepository) IsEmail(c context.Context, email string) (bool, error) {
